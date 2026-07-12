@@ -87,6 +87,17 @@ def parse_log():
                     except ValueError:
                         pass
 
+    # Parse profile info (phase, targets)
+    profile = {"phase": "增肌期", "height_cm": 167, "weight_kg": 68, "protein_target": 120, "calorie_target": 2600}
+    phase_match = re.search(r'当前阶段[：:]\s*\**(.+?)\**\s', content)
+    if phase_match:
+        p = phase_match.group(1)
+        if '减' in p: profile["phase"] = "减脂期"
+    weight_match = re.search(r'目标体重[：:]～?\s*(\d+)', content)
+    if weight_match: profile["weight_kg"] = float(weight_match.group(1))
+    protein_match = re.search(r'蛋白目标\s*(\d+)', content)
+    if protein_match: profile["protein_target"] = int(protein_match.group(1))
+
     # Split by dates
     blocks = re.split(r'\n(?=### \d{4}-\d{2}-\d{2})', content)
     
@@ -129,9 +140,13 @@ def parse_log():
         body_part_match = re.search(r'\*\*(?:部位|💪 今日训练).*?：(.*?)\*\*', block)
         if body_part_match:
             parts_str = body_part_match.group(1).replace('、', ' ').replace('/', ' ')
-            for p in ["胸", "背", "腿", "肩", "手臂", "有氧"]:
-                if p in parts_str:
-                    day_data["body_parts"].append(p)
+            if "胸" in parts_str: day_data["body_parts"].append("胸")
+            if "背" in parts_str: day_data["body_parts"].append("背")
+            if "腿" in parts_str: day_data["body_parts"].append("腿")
+            if "肩" in parts_str: day_data["body_parts"].append("肩")
+            if "二头" in parts_str or "三头" in parts_str or "手臂" in parts_str: day_data["body_parts"].append("手臂")
+            if "有氧" in parts_str: day_data["body_parts"].append("有氧")
+            if "腹" in parts_str: day_data["body_parts"].append("腹")
         
         # Parse exercises
         in_diet = False
@@ -146,22 +161,22 @@ def parse_log():
             w_match = re.search(r'体重[：:]\s*\**[（(]?\s*([\d\.]+)\s*[kgkK][gG]?\**', line)
             if w_match:
                 day_data["weight_kg"] = float(w_match.group(1))
-                
-            # extract diet summary line
-            d_match = re.search(r'饮食[：:]\s*(.+)', line)
-            if d_match:
-                diet_str = d_match.group(1)
-                kcal_m = re.search(r'(?:热量)?\s*(\d+)\s*kcal|热量\s*(\d+)', diet_str)
-                pro_m = re.search(r'蛋白\s*([\d\.]+)', diet_str)
-                carb_m = re.search(r'碳水\s*([\d\.]+)', diet_str)
-                fat_m = re.search(r'脂肪\s*([\d\.]+)', diet_str)
-                
-                day_data["diet"] = {
-                    "total_kcal": float(kcal_m.group(1) or kcal_m.group(2)) if kcal_m else None,
-                    "protein_g": float(pro_m.group(1)) if pro_m else None,
-                    "carbs_g": float(carb_m.group(1)) if carb_m else None,
-                    "fat_g": float(fat_m.group(1)) if fat_m else None
-                }
+
+            # Parse diet food lines: - 食物名 | ~140kcal | 蛋白12g → sum totals
+            diet_line = re.match(r'-\s*(.+?)\s*\|\s*~?\s*([\d,]+)\s*kcal\s*\|\s*蛋白\s*([\d\.]+)\s*g\s*\|\s*碳水\s*([\d\.]+)\s*g\s*\|\s*脂肪\s*([\d\.]+)\s*g', line)
+            if diet_line:
+                if not day_data["diet"]: day_data["diet"] = {"total_kcal": 0, "protein_g": 0, "carbs_g": 0, "fat_g": 0}
+                day_data["diet"]["total_kcal"] += int(diet_line.group(2).replace(',', ''))
+                day_data["diet"]["protein_g"] += float(diet_line.group(3))
+                day_data["diet"]["carbs_g"] += float(diet_line.group(4))
+                day_data["diet"]["fat_g"] += float(diet_line.group(5))
+
+            # Also catch supplement lines: - 乳清蛋白粉 30g | 115kcal | 蛋白22g
+            supp_line = re.match(r'-\s*(?:乳清蛋白粉?|蛋白粉?)\s.*?\|\s*(\d+)\s*kcal\s*\|\s*蛋白\s*([\d\.]+)\s*g', line)
+            if supp_line:
+                if not day_data["diet"]: day_data["diet"] = {"total_kcal": 0, "protein_g": 0, "carbs_g": 0, "fat_g": 0}
+                day_data["diet"]["total_kcal"] += int(supp_line.group(1))
+                day_data["diet"]["protein_g"] += float(supp_line.group(2))
 
             # Exercise list format
             list_match = re.match(r'-\s*(.+?)\s*\|\s*(.+?)\s*\|\s*(.+)', line)
@@ -220,11 +235,14 @@ def parse_log():
             if line.startswith('|') and '动作' not in line and '---' not in line:
                 cols = [c.strip() for c in line.split('|')[1:-1]]
                 if len(cols) >= 3 and not (cols[0] == '食物' or cols[0] == '项目' or cols[0] == '时间'):
-                    ex_name, sets, weight_disp = cols[0], cols[1], cols[2]
-                    if not ('kcal' in sets or 'kcal' in weight_disp or 'g' in sets or 'g' in weight_disp):
+                    ex_name, sets_str, weight_disp = cols[0], cols[1], cols[2]
+                    if not ('kcal' in sets_str or 'kcal' in weight_disp or 'g' in sets_str or 'g' in weight_disp):
+                        grp_matches = re.findall(r'(\d+)\s*组', sets_str)
+                        sets_count = sum(int(m) for m in grp_matches) if grp_matches else (int(re.sub(r'\D', '', sets_str)) if re.search(r'\d', sets_str) else 1)
+                        if sets_count > 50: sets_count = 1
                         day_data["exercises"].append({
                             "name": ex_name,
-                            "sets": int(re.sub(r'\D', '', sets)) if re.search(r'\d', sets) else 1,
+                            "sets": sets_count,
                             "weight_display": weight_disp
                         })
 
@@ -262,15 +280,25 @@ def parse_log():
                             new_actions += 1
             all_muscles.update(ex["muscles"])
             
-        # Fallback body parts if empty
+        # Fallback body parts if empty — only flag primary areas, not every muscle touched
         if not day_data["body_parts"] and day_data["has_training"]:
-            m_str = " ".join(all_muscles)
-            if "胸" in m_str: day_data["body_parts"].append("胸")
-            if "背" in m_str: day_data["body_parts"].append("背")
-            if "股四" in m_str or "腘绳" in m_str or "臀" in m_str: day_data["body_parts"].append("腿")
-            if "三角" in m_str: day_data["body_parts"].append("肩")
-            if "二头" in m_str or "三头" in m_str: day_data["body_parts"].append("手臂")
-            if "腹" in m_str: day_data["body_parts"].append("腹")
+            # Count which area each exercise primarily targets
+            area_counts = {"胸":0,"背":0,"腿":0,"肩":0,"手臂":0,"腹":0}
+            for ex in day_data["exercises"]:
+                ms = " ".join(ex.get("muscles",[]))
+                if "胸" in ms: area_counts["胸"] += 1
+                elif "背" in ms or "阔肌" in ms: area_counts["背"] += 1
+                elif "股四" in ms or "腘绳" in ms or "臀" in ms: area_counts["腿"] += 1
+                elif "三角" in ms: area_counts["肩"] += 1
+                elif "二头" in ms or "三头" in ms: area_counts["手臂"] += 1
+                elif "腹" in ms: area_counts["腹"] += 1
+            # Only include areas with significant representation (≥30% of exercises or top 2)
+            total_ex = len(day_data["exercises"])
+            threshold = max(1, total_ex * 0.3)
+            sorted_areas = sorted(area_counts.items(), key=lambda x: -x[1])
+            for area, count in sorted_areas:
+                if count >= threshold or (len(day_data["body_parts"]) < 2 and count > 0):
+                    day_data["body_parts"].append(area)
 
         day_data["body_parts"] = list(set(day_data["body_parts"]))
         days.append(day_data)
@@ -322,7 +350,8 @@ def parse_log():
             }
         },
         "weight_log": weight_log,
-        "days": days
+        "days": days,
+        "profile": profile
     }
     
     save_json(DATA_OUT, data_out)
