@@ -1,0 +1,98 @@
+<svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .muscle { fill: var(--muscle-bg, #e0e0e0); stroke: var(--muscle-stroke, #fff); stroke-width: 2; transition: fill 0.3s ease; }
+    .muscle.active { fill: var(--muscle-active, #ff4757); }
+    .label { font-size: 12px; fill: var(--text-color, #666); text-anchor: middle; font-family: sans-serif; }
+  </style>
+
+  <!-- Front Body -->
+  <g transform="translate(10, 20)">
+    <text x="65" y="-5" class="label">正面 Front</text>
+    <!-- Head & Neck -->
+    <circle cx="65" cy="20" r="15" fill="#ccc" />
+    <rect x="58" y="35" width="14" height="10" fill="#ccc" />
+    
+    <!-- 斜方肌 (Traps) -->
+    <path data-muscle="斜方肌" class="muscle" d="M 40,40 L 58,35 L 72,35 L 90,40 Z" />
+    
+    <!-- 三角肌前束 (Front Delts) -->
+    <path data-muscle="三角肌" class="muscle" d="M 25,45 Q 40,40 45,55 Q 35,65 25,60 Z" />
+    <path data-muscle="三角肌" class="muscle" d="M 105,45 Q 90,40 85,55 Q 95,65 105,60 Z" />
+    
+    <!-- 胸大肌 (Pecs) -->
+    <path data-muscle="胸大肌" class="muscle" d="M 45,45 Q 65,50 65,70 L 45,70 Z" />
+    <path data-muscle="胸大肌" class="muscle" d="M 85,45 Q 65,50 65,70 L 85,70 Z" />
+    
+    <!-- 腹直肌 (Abs) -->
+    <rect data-muscle="腹直肌" class="muscle" x="45" y="70" width="20" height="40" />
+    <rect data-muscle="腹直肌" class="muscle" x="65" y="70" width="20" height="40" />
+    <rect data-muscle="腹直肌" class="muscle" x="45" y="110" width="20" height="30" />
+    <rect data-muscle="腹直肌" class="muscle" x="65" y="110" width="20" height="30" />
+    
+    <!-- 腹斜肌 (Obliques) -->
+    <path data-muscle="腹斜肌" class="muscle" d="M 45,70 L 35,100 L 45,110 Z" />
+    <path data-muscle="腹斜肌" class="muscle" d="M 85,70 L 95,100 L 85,110 Z" />
+    
+    <!-- 肱二头肌 (Biceps) -->
+    <ellipse data-muscle="肱二头肌" class="muscle" cx="25" cy="75" rx="10" ry="15" />
+    <ellipse data-muscle="肱二头肌" class="muscle" cx="105" cy="75" rx="10" ry="15" />
+    
+    <!-- 前臂屈肌 (Forearms) -->
+    <ellipse data-muscle="前臂屈肌" class="muscle" cx="20" cy="115" rx="8" ry="20" />
+    <ellipse data-muscle="前臂屈肌" class="muscle" cx="110" cy="115" rx="8" ry="20" />
+    
+    <!-- 股四头肌 (Quads) -->
+    <path data-muscle="股四头肌" class="muscle" d="M 35,140 Q 55,140 60,190 Q 40,190 35,140 Z" />
+    <path data-muscle="股四头肌" class="muscle" d="M 95,140 Q 75,140 70,190 Q 90,190 95,140 Z" />
+    
+    <!-- 内收肌群 (Adductors) -->
+    <path data-muscle="内收肌群" class="muscle" d="M 65,140 L 60,190 L 65,190 Z" />
+    <path data-muscle="内收肌群" class="muscle" d="M 65,140 L 70,190 L 65,190 Z" />
+    
+    <!-- 胫骨前肌 (Tibialis) -->
+    <path data-muscle="胫骨前肌" class="muscle" d="M 40,210 Q 55,210 50,260 L 45,260 Z" />
+    <path data-muscle="胫骨前肌" class="muscle" d="M 90,210 Q 75,210 80,260 L 85,260 Z" />
+  </g>
+
+  <!-- Back Body -->
+  <g transform="translate(160, 20)">
+    <text x="65" y="-5" class="label">背面 Back</text>
+    <!-- Head & Neck -->
+    <circle cx="65" cy="20" r="15" fill="#ccc" />
+    <rect x="58" y="35" width="14" height="10" fill="#ccc" />
+    
+    <!-- 斜方肌 (Traps - Back) -->
+    <path data-muscle="斜方肌" class="muscle" d="M 40,40 L 65,60 L 90,40 L 65,35 Z" />
+    
+    <!-- 三角肌后束 (Rear Delts) -->
+    <path data-muscle="三角肌" class="muscle" d="M 25,45 Q 40,40 45,55 Q 35,65 25,60 Z" />
+    <path data-muscle="三角肌" class="muscle" d="M 105,45 Q 90,40 85,55 Q 95,65 105,60 Z" />
+    
+    <!-- 背阔肌 (Lats) -->
+    <path data-muscle="背阔肌" class="muscle" d="M 45,65 Q 35,80 45,110 L 65,110 L 65,65 Z" />
+    <path data-muscle="背阔肌" class="muscle" d="M 85,65 Q 95,80 85,110 L 65,110 L 65,65 Z" />
+    
+    <!-- 竖脊肌 (Erector Spinae) -->
+    <rect data-muscle="竖脊肌" class="muscle" x="60" y="60" width="10" height="50" />
+    
+    <!-- 肱三头肌 (Triceps) -->
+    <ellipse data-muscle="肱三头肌" class="muscle" cx="25" cy="75" rx="10" ry="15" />
+    <ellipse data-muscle="肱三头肌" class="muscle" cx="105" cy="75" rx="10" ry="15" />
+    
+    <!-- 前臂屈肌 (Forearms) -->
+    <ellipse data-muscle="前臂屈肌" class="muscle" cx="20" cy="115" rx="8" ry="20" />
+    <ellipse data-muscle="前臂屈肌" class="muscle" cx="110" cy="115" rx="8" ry="20" />
+    
+    <!-- 臀大肌 (Glutes) -->
+    <path data-muscle="臀大肌" class="muscle" d="M 35,110 Q 50,110 65,140 Q 35,150 35,110 Z" />
+    <path data-muscle="臀大肌" class="muscle" d="M 95,110 Q 80,110 65,140 Q 95,150 95,110 Z" />
+    
+    <!-- 腘绳肌 (Hamstrings) -->
+    <path data-muscle="腘绳肌" class="muscle" d="M 35,140 Q 55,140 60,190 Q 40,190 35,140 Z" />
+    <path data-muscle="腘绳肌" class="muscle" d="M 95,140 Q 75,140 70,190 Q 90,190 95,140 Z" />
+    
+    <!-- 腓肠肌 (Calves) -->
+    <ellipse data-muscle="腓肠肌" class="muscle" cx="50" cy="225" rx="12" ry="20" />
+    <ellipse data-muscle="腓肠肌" class="muscle" cx="80" cy="225" rx="12" ry="20" />
+  </g>
+</svg>

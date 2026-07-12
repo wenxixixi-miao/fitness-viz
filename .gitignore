@@ -1,0 +1,5 @@
+data.json
+fitness_log.md
+__pycache__/
+*.pyc
+.DS_Store
