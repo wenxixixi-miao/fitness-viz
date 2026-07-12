@@ -49,6 +49,16 @@
     "跪姿卷腹": {"muscles": ["腹直肌"], "source": "manual", "added": "2026-07-12"},
     "健腹轮": {"muscles": ["腹直肌"], "source": "manual", "added": "2026-07-12"},
     "滚腹轮卷腹": {"muscles": ["腹直肌"], "source": "manual", "added": "2026-07-12"},
-    "悬吊卷腹": {"muscles": ["腹直肌"], "source": "manual", "added": "2026-07-12"}
+    "悬吊卷腹": {"muscles": ["腹直肌"], "source": "manual", "added": "2026-07-12"},
+    "绳索热身肩部": {"muscles": ["三角肌"], "source": "manual", "added": "2026-07-12"},
+    "绳索三头热身": {"muscles": ["肱三头肌"], "source": "manual", "added": "2026-07-12"},
+    "绳索三头下拉热身": {"muscles": ["肱三头肌"], "source": "manual", "added": "2026-07-12"},
+    "绳索三头下拉": {"muscles": ["肱三头肌"], "source": "manual", "added": "2026-07-12"},
+    "推肩": {"muscles": ["三角肌"], "source": "manual", "added": "2026-07-12"},
+    "哑铃弯举": {"muscles": ["肱二头肌"], "source": "manual", "added": "2026-07-12"},
+    "上斜器械推胸": {"muscles": ["胸大肌上部", "三角肌前束"], "source": "manual", "added": "2026-07-12"},
+    "坐姿划船训练器": {"muscles": ["背阔肌", "菱形肌"], "source": "manual", "added": "2026-07-12"},
+    "引体向上": {"muscles": ["背阔肌", "肱二头肌"], "source": "manual", "added": "2026-07-12"},
+    "滚腹轮": {"muscles": ["腹直肌", "腹斜肌"], "source": "manual", "added": "2026-07-12"}
   }
 }

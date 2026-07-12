@@ -137,9 +137,11 @@ def parse_log():
         }
         
         # Try finding body parts explicitly
-        body_part_match = re.search(r'\*\*(?:部位|💪 今日训练).*?：(.*?)\*\*', block)
+        body_part_match = re.search(r'\*\*(?:部位|💪 今日训练|有氧).*?[：:](.*?)\*\*', block)
         if body_part_match:
             parts_str = body_part_match.group(1).replace('、', ' ').replace('/', ' ')
+            full_header = body_part_match.group(0)
+            if full_header.startswith('**有氧'): day_data["body_parts"].append("有氧")
             if "胸" in parts_str: day_data["body_parts"].append("胸")
             if "背" in parts_str: day_data["body_parts"].append("背")
             if "腿" in parts_str: day_data["body_parts"].append("腿")

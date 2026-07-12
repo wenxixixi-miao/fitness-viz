@@ -71,6 +71,13 @@
     <!-- 背阔肌 (Lats) -->
     <path data-muscle="背阔肌" class="muscle" d="M 45,65 Q 35,80 45,110 L 65,110 L 65,65 Z" />
     <path data-muscle="背阔肌" class="muscle" d="M 85,65 Q 95,80 85,110 L 65,110 L 65,65 Z" />
+
+    <!-- 大圆肌 (Teres Major) — small patches at upper lats -->
+    <ellipse data-muscle="大圆肌" class="muscle" cx="40" cy="68" rx="8" ry="12" />
+    <ellipse data-muscle="大圆肌" class="muscle" cx="90" cy="68" rx="8" ry="12" />
+
+    <!-- 菱形肌 (Rhomboids) — between shoulder blades -->
+    <ellipse data-muscle="菱形肌" class="muscle" cx="65" cy="55" rx="12" ry="8" />
     
     <!-- 竖脊肌 (Erector Spinae) -->
     <rect data-muscle="竖脊肌" class="muscle" x="60" y="60" width="10" height="50" />
