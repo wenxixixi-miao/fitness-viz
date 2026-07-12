@@ -367,5 +367,17 @@ def parse_log():
     print(f"📁 输出: {DATA_OUT}")
     print("━━━━━━━━━━━━━━━━━━━━━━━━━━")
 
+    # Auto-resolve pending exercise mappings
+    auto_map = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'auto_map.py')
+    if os.path.exists(auto_map):
+        import subprocess
+        result = subprocess.run(['python3', auto_map], capture_output=True, text=True)
+        if result.stdout.strip():
+            print("\n🤖 自动映射:")
+            print(result.stdout.strip())
+        # Re-parse with new mappings if any resolved
+        if '✅' in result.stdout:
+            parse_log()
+
 if __name__ == '__main__':
     parse_log()
