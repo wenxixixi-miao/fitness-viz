@@ -4,6 +4,8 @@
 
 **在线演示**：https://wenxixixi.cc/fitness/
 
+![截图](screenshot.png)
+
 ## ✨ 功能
 
 - 📅 **月历视图** — 彩色圆点标记训练部位，点击查看详情，可下滑关闭
