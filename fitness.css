@@ -204,6 +204,27 @@
   flex: 1;
   -webkit-overflow-scrolling: touch;
 }
+.sheet-close-btn {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  background: var(--bg-secondary);
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1.5rem;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  z-index: 10;
+}
+.sheet-close-btn:active {
+  background: var(--border);
+}
 .sheet-content h3 {
   margin: 0 0 4px 0;
   font-size: 1.2rem;
@@ -296,6 +317,7 @@
   height: 16px;
   border-radius: 2px;
   background-color: var(--level-0);
+  cursor: pointer;
 }
 .heatmap-cell.level-1 { background-color: var(--level-1); }
 .heatmap-cell.level-2 { background-color: var(--level-2); }
