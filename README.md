@@ -84,15 +84,18 @@ cd fitness && python3 -m http.server 8080
 
 ## 🤖 Hermes AI 集成
 
-本项目配套 Hermes Agent 技能，可直接用 AI 记录健身数据：
+本项目配套 Hermes Agent 技能，可直接用 AI 记录健身数据。把 `skills/` 下的目录拷进 `~/.hermes/skills/` 就能用：
 
-**`skills/fitness-logging.md`** — 规范记录格式
-- 训练动作记录、体重、饮食等统一格式
+**`skills/fitness-logging/SKILL.md`** — 规范记录格式
+- 训练动作记录、体重、饮食等统一格式（含必须遵守的写入手势与事后校验）
 - 解析器自动提取，网页自动同步
 
-**`skills/exercise-mapping-assistant.md`** — 自动映射新动作
+**`skills/exercise-mapping-assistant/SKILL.md` + `scripts/auto_map.py`** — 自动映射新动作
 - 遇到未映射动作自动推理肌肉群
-- 高置信直接写入，低置信待人工确认
+- 高置信直接写入，低置信留 pending 等人工确认
+
+**`safe_write_fitness.sh`** — 写入守卫
+- `chattr +i` 内核锁 + 解析校验（天数不减少则拒绝）+ 失败回滚，防止 AI 或手滑把日志写坏
 
 ## 📁 文件说明
 
