@@ -4,23 +4,39 @@
 
 **在线演示**：https://wenxixixi.cc/fitness/
 
-![截图](screenshot.png)
+**当前版本**：v3.0.0（详见 [CHANGELOG.md](CHANGELOG.md)）
+
+![日历视图](docs/screenshots/01-calendar.png)
+
+## 📸 界面预览
+
+| 日历视图 | 年度热力图 |
+| :---: | :---: |
+| ![日历](docs/screenshots/01-calendar.png) | ![热力图](docs/screenshots/02-heatmap.png) |
+| **体重趋势** | **训练统计** |
+| ![体重](docs/screenshots/03-weight.png) | ![统计](docs/screenshots/04-stats.png) |
+| **训练详情（动作卡片）** | **解剖肌肉图解（正面 / 背面）** |
+| ![训练详情](docs/screenshots/05-day-detail.png) | ![肌肉图解](docs/screenshots/06-muscle-anatomy.png) |
+
+> 截图取自 iPhone Safari（跟随系统 = 浅色模式）。页面支持 🌙 暗夜 / ☀️ 浅色 / 🖥️ 跟随系统 三态主题切换。
 
 ## ✨ 功能
 
-- 📅 **月历视图** — 彩色圆点标记训练部位，点击查看详情，可下滑关闭
-- 🔥 **热力图** — GitHub 风格年度训练频率，格子可点击看当天详情
+- 📅 **月历视图** — 彩色胶囊条标记训练部位，点击查看详情，可下滑关闭
+- 🔥 **热力图** — GitHub 连续时间织锦式年度热力图（7 行 × N 周），格子可点击看当天详情，附四宫格指标卡与月度训练密度分析
 - 📈 **体重趋势** — 折线图 + 体脂率线（可选），目标线自动从日志读取
-- 📊 **训练统计** — 部位分布饼图 + 每周天数柱状图
-- 🦴 **肌肉可视化** — 人体正反面 SVG，当天练到的肌肉自动变红
-- 🍽️ **饮食分析** — 自动解析饮食数据，根据增肌/减脂阶段判断是否达标
+- 📊 **训练统计** — 部位分布环形图 + 每周天数柱状图
+- 🫀 **肌肉可视化** — MuscleWiki 级解剖矢量人体，16 大核心肌群高亮、正反面无感切换、按当天训练自动判定主训练面
+- 🍽️ **饮食分析** — 自动解析饮食数据，三大宏量营养素占比条，按增肌/减脂阶段判断是否达标
+- 🖥️ **桌面端适配** — ≥768px 自动扩展为 1040px 桌面仪表盘，统计图左右并排、详情升级为中央晶体弹窗
+- 🎛️ **多态主题** — 暗夜 / 浅色 / 跟随系统，localStorage 持久化
 
 ## 🛠 技术栈
 
 - **数据解析**：Python 脚本，Markdown → JSON
 - **前端**：Alpine.js + Chart.js + 手写日历/热力图
-- **部署**：Nginx 静态文件托管
-- **更新**：cron 每 10 分钟自动跑解析脚本
+- **部署**：Nginx 静态文件托管（开启全局 Gzip）
+- **更新**：cron 每 10 分钟自动跑解析脚本（SHA256 增量跳过 + flock 互斥锁）
 
 ## 🚀 快速开始
 
@@ -40,7 +56,7 @@
 
 ### 2. 配置动作映射
 
-编辑 `data/exercise_map.json`，已有 50+ 常见动作。遇到新动作时 `auto_map.py` 自动推理。
+编辑 `exercise_map.json`，已有 50+ 常见动作。遇到新动作时 `auto_map.py` 自动推理。
 
 ### 3. 运行解析
 
@@ -58,8 +74,8 @@ fitness/
 ├── css/fitness.css
 ├── img/body-outline.svg
 ├── data.json
-├── data/exercise_map.json
-└── data/exercise_map_pending.json
+├── exercise_map.json
+└── exercise_map_pending.json
 ```
 
 ```bash
@@ -82,12 +98,14 @@ cd fitness && python3 -m http.server 8080
 
 | 文件 | 用途 |
 |------|------|
-| `parse_fitness.py` | Markdown 解析器，输出 JSON |
+| `parse_fitness.py` | Markdown 解析器，输出 JSON（SHA256 增量 + flock 互斥） |
 | `auto_map.py` | 未映射动作自动推理 |
+| `safe_write_fitness.sh` | 写入守卫：内核锁 + 校验 + 失败回滚 |
 | `index.html` | 前端单页（Alpine.js + Chart.js） |
-| `fitness.css` | 样式（跟随系统深色/浅色） |
-| `body-outline.svg` | 人体肌肉轮廓（18 个高亮分区） |
+| `css/fitness.css` | 样式（暗夜 / 浅色 / 跟随系统三态） |
+| `img/body-outline.svg` | 解剖级人体肌肉矢量图（16 肌群高亮） |
 | `exercise_map.json` | 动作→肌肉映射表（50+ 动作） |
+| `docs/screenshots/` | 界面预览截图 |
 | `ARCHITECTURE.md` | 架构文档 |
 | `CHANGELOG.md` | 更新日志 |
 | `skills/` | Hermes Agent 配套技能 |
