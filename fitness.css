@@ -283,9 +283,6 @@ body {
   margin: 8px 0;
   position: relative;
 }
-.month-nav-controls {
-  display: contents;
-}
 .month-nav-btn {
   background: var(--card-bg);
   border: 1px solid var(--card-border);
@@ -300,27 +297,22 @@ body {
   transition: all 0.2s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   -webkit-tap-highlight-color: transparent;
+  flex-shrink: 0;
 }
 .month-nav-btn:active {
   transform: scale(0.9);
   border-color: var(--accent);
 }
-.desktop-today-btn {
-  display: none !important;
-}
-.mobile-today-badge {
-  display: inline-flex;
-}
-.month-stats-chips {
-  display: none !important;
-}
 .month-display {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
   font-size: 1.15rem;
   font-weight: 700;
   letter-spacing: -0.02em;
+  flex: 1;
+  text-align: center;
 }
 .today-badge {
   font-size: 0.72rem;
@@ -336,6 +328,9 @@ body {
 }
 .today-badge:active {
   transform: scale(0.92);
+}
+.month-stats-chips {
+  display: none !important;
 }
 
 /* Calendar Grid */
@@ -1379,7 +1374,7 @@ body {
     transform: scale(1.08);
   }
 
-  /* Desktop Month Navigation - 3-Zone Control & Overview Bar */
+  /* Desktop Month Navigation */
   .month-nav {
     max-width: 1040px;
     width: 100%;
@@ -1391,52 +1386,43 @@ body {
     justify-content: space-between;
     align-items: center;
   }
-  .month-nav-controls {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    z-index: 2;
-  }
-  .month-nav-btn {
+  .month-nav .prev-btn {
+    order: 1;
     border-radius: 10px;
     width: 34px;
     height: 34px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
   }
-  .month-nav-btn:hover {
+  .month-nav .next-btn {
+    order: 2;
+    margin-left: 6px;
+    border-radius: 10px;
+    width: 34px;
+    height: 34px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  }
+  .month-nav .prev-btn:hover,
+  .month-nav .next-btn:hover {
     border-color: var(--accent);
     color: var(--accent);
     transform: scale(1.05);
   }
-  .desktop-today-btn {
-    display: inline-flex !important;
-    align-items: center;
-    justify-content: center;
-    height: 34px;
-    border-radius: 10px;
-    padding: 0 14px;
-    font-size: 0.82rem;
-    font-weight: 600;
-    cursor: pointer;
-  }
-  .desktop-today-btn:hover {
-    filter: brightness(1.1);
-  }
-  .mobile-today-badge {
-    display: none !important;
-  }
-  .month-display {
-    font-size: 1.35rem;
-    font-weight: 700;
-    letter-spacing: -0.02em;
+  .month-nav .month-display {
+    order: 3;
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    pointer-events: none;
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    pointer-events: auto;
+    flex: none;
   }
-  .month-stats-chips {
+  .month-nav .month-stats-chips {
+    order: 4;
     display: flex !important;
     align-items: center;
+    margin-left: auto;
     z-index: 2;
   }
   .month-chips-wrapper {

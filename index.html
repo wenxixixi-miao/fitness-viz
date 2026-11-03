@@ -9,7 +9,7 @@
 <link rel="icon" href="icon.png" type="image/png">
 <link rel="apple-touch-icon" href="icon.png">
 <title>健身数据</title>
-<link rel="stylesheet" href="css/fitness.css?v=20261103_desktop_ui">
+<link rel="stylesheet" href="css/fitness.css?v=20261103_mobile_centered">
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.x.x/dist/chart.umd.min.js"></script>
 <style>
@@ -125,20 +125,18 @@ body { margin: 0; background: var(--bg-primary); color: var(--text-primary); fon
 
     <!-- Month & Year Navigation -->
     <div class="month-nav" x-show="activeTab === 'calendar' || activeTab === 'heatmap'">
-      <div class="month-nav-controls">
-        <button class="month-nav-btn" @click="activeTab === 'calendar' ? prevMonth() : prevYear()" :aria-label="activeTab === 'calendar' ? '上一月' : '上一年'">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
-        </button>
-        <button class="today-badge desktop-today-btn" x-show="activeTab === 'calendar' && !isCurrentMonth" @click="goToToday()">今天</button>
-        <button class="month-nav-btn" @click="activeTab === 'calendar' ? nextMonth() : nextYear()" :aria-label="activeTab === 'calendar' ? '下一月' : '下一年'">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-        </button>
-      </div>
+      <button class="month-nav-btn prev-btn" @click="activeTab === 'calendar' ? prevMonth() : prevYear()" :aria-label="activeTab === 'calendar' ? '上一月' : '上一年'">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
 
       <div class="month-display">
         <span x-text="activeTab === 'calendar' ? currentMonthDisplay : currentYearDisplay"></span>
-        <button class="today-badge mobile-today-badge" x-show="activeTab === 'calendar' && !isCurrentMonth" @click="goToToday()">今天</button>
+        <button class="today-badge" x-show="activeTab === 'calendar' && !isCurrentMonth" @click="goToToday()">今天</button>
       </div>
+
+      <button class="month-nav-btn next-btn" @click="activeTab === 'calendar' ? nextMonth() : nextYear()" :aria-label="activeTab === 'calendar' ? '下一月' : '下一年'">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
 
       <!-- Desktop Month Overview Chips -->
       <div class="month-stats-chips" x-show="activeTab === 'calendar'">
