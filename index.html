@@ -9,7 +9,7 @@
 <link rel="icon" href="icon.png" type="image/png">
 <link rel="apple-touch-icon" href="icon.png">
 <title>健身数据</title>
-<link rel="stylesheet" href="css/fitness.css">
+<link rel="stylesheet" href="css/fitness.css?v=20261103_desktop_ui">
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.x.x/dist/chart.umd.min.js"></script>
 <style>
@@ -21,7 +21,7 @@ body { margin: 0; background: var(--bg-primary); color: var(--text-primary); fon
 </style>
 </head>
 <body>
-<div id="fitness-app" x-cloak x-data="fitnessApp()" x-init="init()" @touchstart.passive="ptrTouchStart($event)" @touchmove.passive="ptrTouchMove($event)" @touchend="ptrTouchEnd($event)">
+<div id="fitness-app" x-cloak x-data="fitnessApp()" x-init="init()" @keydown.escape.window="if(showDetail) closeDetail()" @touchstart.passive="ptrTouchStart($event)" @touchmove.passive="ptrTouchMove($event)" @touchend="ptrTouchEnd($event)">
 
   <!-- Non-blocking Toast Banner -->
   <div class="toast-banner" x-show="toastMessage" x-transition.opacity.duration.300ms style="display:none">
@@ -70,6 +70,27 @@ body { margin: 0; background: var(--bg-primary); color: var(--text-primary); fon
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 16v-3a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v3"/><circle cx="12" cy="7" r="4"/></svg>
         <span class="brand-title">健身看板</span>
       </div>
+
+      <!-- Desktop Header Tab Bar (Visible on >= 768px) -->
+      <nav class="top-desktop-nav" aria-label="桌面端主导航">
+        <button type="button" class="desktop-nav-tab" :class="{active: activeTab==='calendar'}" @click="switchTab('calendar')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span>日历</span>
+        </button>
+        <button type="button" class="desktop-nav-tab" :class="{active: activeTab==='heatmap'}" @click="switchTab('heatmap')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="1" y="15" width="4" height="8" rx="1"/><rect x="8" y="12" width="4" height="11" rx="1"/><rect x="15" y="7" width="4" height="16" rx="1"/></svg>
+          <span>热力</span>
+        </button>
+        <button type="button" class="desktop-nav-tab" :class="{active: activeTab==='weight'}" @click="switchTab('weight')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 17 9 11 13 15 21 7"/></svg>
+          <span>体重</span>
+        </button>
+        <button type="button" class="desktop-nav-tab" :class="{active: activeTab==='stats'}" @click="switchTab('stats')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 0 20"/><path d="M2 12h20"/></svg>
+          <span>统计</span>
+        </button>
+      </nav>
+
       <div class="top-center-status">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         <span x-text="'更新于 ' + lastUpdated"></span>
@@ -104,16 +125,39 @@ body { margin: 0; background: var(--bg-primary); color: var(--text-primary); fon
 
     <!-- Month & Year Navigation -->
     <div class="month-nav" x-show="activeTab === 'calendar' || activeTab === 'heatmap'">
-      <button @click="activeTab === 'calendar' ? prevMonth() : prevYear()" :aria-label="activeTab === 'calendar' ? '上一月' : '上一年'">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
-      </button>
+      <div class="month-nav-controls">
+        <button class="month-nav-btn" @click="activeTab === 'calendar' ? prevMonth() : prevYear()" :aria-label="activeTab === 'calendar' ? '上一月' : '上一年'">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <button class="today-badge desktop-today-btn" x-show="activeTab === 'calendar' && !isCurrentMonth" @click="goToToday()">今天</button>
+        <button class="month-nav-btn" @click="activeTab === 'calendar' ? nextMonth() : nextYear()" :aria-label="activeTab === 'calendar' ? '下一月' : '下一年'">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+
       <div class="month-display">
         <span x-text="activeTab === 'calendar' ? currentMonthDisplay : currentYearDisplay"></span>
-        <button class="today-badge" x-show="activeTab === 'calendar' && !isCurrentMonth" @click="goToToday()">今天</button>
+        <button class="today-badge mobile-today-badge" x-show="activeTab === 'calendar' && !isCurrentMonth" @click="goToToday()">今天</button>
       </div>
-      <button @click="activeTab === 'calendar' ? nextMonth() : nextYear()" :aria-label="activeTab === 'calendar' ? '下一月' : '下一年'">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
+
+      <!-- Desktop Month Overview Chips -->
+      <div class="month-stats-chips" x-show="activeTab === 'calendar'">
+        <template x-if="currentMonthStats && currentMonthStats.total > 0">
+          <div class="month-chips-wrapper">
+            <div class="month-chip chip-workout">
+              <span class="chip-dot dot-green"></span>
+              <span>训练 <strong x-text="currentMonthStats.workouts"></strong> 天</span>
+            </div>
+            <div class="month-chip chip-rest">
+              <span class="chip-dot dot-gray"></span>
+              <span>休息 <strong x-text="currentMonthStats.rest"></strong> 天</span>
+            </div>
+            <div class="month-chip chip-rate">
+              <span>出勤率 <strong x-text="currentMonthStats.rate + '%'"></strong></span>
+            </div>
+          </div>
+        </template>
+      </div>
     </div>
 
     <!-- Tab Contents -->
@@ -127,14 +171,29 @@ body { margin: 0; background: var(--bg-primary); color: var(--text-primary); fon
         <div class="days-grid">
           <template x-for="(day, i) in calendarDays" :key="i">
             <div class="day-cell" 
-                 :class="{today: day.isToday, 'has-data': day.data, 'has-training': day.data && day.data.has_training, empty: !day.date}" 
+                 :class="{
+                   today: day.isToday, 
+                   'has-data': day.data, 
+                   'has-training': day.data && day.data.has_training, 
+                   empty: !day.date
+                 }" 
                  :role="day.data ? 'button' : null"
                  :tabindex="day.data ? 0 : -1"
                  :aria-label="day.date ? (day.date + (day.data && day.data.has_training ? ' 训练：' + day.data.body_parts.join('/') : ' 无训练记录')) : null"
                  @click="if(day.data) openDetail(day.data)"
                  @keydown.enter="if(day.data) openDetail(day.data)"
                  @keydown.space.prevent="if(day.data) openDetail(day.data)">
-              <span class="day-number" x-text="day.dayNumber"></span>
+              
+              <!-- Day Header Row -->
+              <div class="day-cell-top">
+                <span class="day-number" x-text="day.dayNumber"></span>
+                <div class="day-top-badges">
+                  <span class="day-badge-today" x-show="day.isToday">今</span>
+                  <span class="day-badge-weight" x-show="day.data && day.data.weight_kg" x-text="day.data.weight_kg + 'kg'"></span>
+                </div>
+              </div>
+
+              <!-- Mobile Dots View (< 768px) -->
               <template x-if="day.data && day.data.has_training">
                 <div class="dots-container">
                   <template x-for="part in day.data.body_parts" :key="part">
@@ -142,6 +201,36 @@ body { margin: 0; background: var(--bg-primary); color: var(--text-primary); fon
                   </template>
                 </div>
               </template>
+
+              <!-- Desktop Rich Card Body (>= 768px) -->
+              <div class="day-desktop-body" x-show="day.date">
+                <!-- Training Day Content -->
+                <template x-if="day.data && day.data.has_training">
+                  <div class="desktop-workout-box">
+                    <div class="desktop-muscle-pill" :class="'pill-' + getPartClass(day.data.body_parts[0])">
+                      <span class="pill-dot" :class="getPartClass(day.data.body_parts[0])"></span>
+                      <span class="pill-text" x-text="day.data.body_parts.join(' · ')"></span>
+                    </div>
+                    <div class="desktop-meta-summary" x-show="day.data.exercises && day.data.exercises.length">
+                      <span x-text="day.data.exercises.length + '个动作 · ' + getDaySets(day.data) + '组'"></span>
+                    </div>
+                  </div>
+                </template>
+
+                <!-- Rest Day with Data Content -->
+                <template x-if="day.data && !day.data.has_training">
+                  <div class="desktop-rest-box">
+                    <div class="desktop-rest-pill">
+                      <span class="rest-pill-dot"></span>
+                      <span>休息日</span>
+                    </div>
+                    <div class="desktop-diet-summary" x-show="day.data.diet && day.data.diet.total_kcal">
+                      <span x-text="Math.round(day.data.diet.total_kcal) + ' kcal'"></span>
+                    </div>
+                  </div>
+                </template>
+              </div>
+
             </div>
           </template>
         </div>
@@ -547,6 +636,23 @@ window.fitnessApp = function(){
       return this.currentDate.getFullYear() === now.getFullYear() && this.currentDate.getMonth() === now.getMonth();
     },
 
+    get currentMonthStats(){
+      if(!this.fitnessData || !this.fitnessData.days) return { workouts: 0, rest: 0, total: 0, rate: 0 };
+      const y = this.currentDate.getFullYear(), m = this.currentDate.getMonth() + 1;
+      const prefix = y + '-' + String(m).padStart(2, '0');
+      const mDays = this.fitnessData.days.filter(d => d.date && d.date.startsWith(prefix));
+      const workouts = mDays.filter(d => d.has_training).length;
+      const total = mDays.length;
+      const rest = total - workouts;
+      const rate = total > 0 ? Math.round((workouts / total) * 100) : 0;
+      return { workouts, rest, total, rate };
+    },
+
+    getDaySets(data){
+      if(!data || !data.exercises || !data.exercises.length) return 0;
+      return data.exercises.reduce((sum, ex) => sum + (Number(ex.sets) || 0), 0);
+    },
+
     async init(){
       this.loading = true;
       this.error = false;
@@ -569,7 +675,7 @@ window.fitnessApp = function(){
 
       if(!this._svgCached){
         try {
-          const s = await fetch('img/body-outline.svg');
+          const s = await fetch('img/body-outline.svg?v=20261103_musclewiki');
           this.muscleSvgContent = await s.text();
           this._svgCached = true;
         } catch(e){}
@@ -1278,10 +1384,16 @@ window.fitnessApp = function(){
         '胸': 'dot-blue',
         '背': 'dot-green',
         '肩': 'dot-yellow',
+        '前束': 'dot-yellow',
+        '中束': 'dot-yellow',
+        '后束': 'dot-yellow',
         '手臂': 'dot-purple',
+        '二头': 'dot-purple',
+        '三头': 'dot-purple',
+        '腹': 'dot-blue',
         '有氧': 'dot-brown'
       };
-      return m[p] || 'dot-gray';
+      return m[p] || 'dot-green';
     },
 
     getDietVerdict(day){

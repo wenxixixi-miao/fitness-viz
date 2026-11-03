@@ -4,7 +4,7 @@
 
 **在线演示**：https://wenxixixi.cc/fitness/
 
-**当前版本**：v3.0.0（详见 [CHANGELOG.md](CHANGELOG.md)）
+**当前版本**：v3.1.0（详见 [CHANGELOG.md](CHANGELOG.md)）
 
 ![日历视图](docs/screenshots/01-calendar.png)
 

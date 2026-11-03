@@ -281,8 +281,12 @@ body {
   height: 52px;
   padding: 0 16px;
   margin: 8px 0;
+  position: relative;
 }
-.month-nav button {
+.month-nav-controls {
+  display: contents;
+}
+.month-nav-btn {
   background: var(--card-bg);
   border: 1px solid var(--card-border);
   border-radius: 50%;
@@ -297,9 +301,18 @@ body {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   -webkit-tap-highlight-color: transparent;
 }
-.month-nav button:active {
+.month-nav-btn:active {
   transform: scale(0.9);
   border-color: var(--accent);
+}
+.desktop-today-btn {
+  display: none !important;
+}
+.mobile-today-badge {
+  display: inline-flex;
+}
+.month-stats-chips {
+  display: none !important;
 }
 .month-display {
   display: flex;
@@ -418,6 +431,23 @@ body {
 .dot-purple { background-color: var(--dot-purple); }
 .dot-brown { background-color: var(--dot-brown); }
 .dot-gray { background-color: var(--dot-gray); }
+
+/* Day Cell Internal Hierarchy (Base / Mobile Default) */
+.day-cell-top {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+.day-top-badges {
+  display: none;
+}
+.day-desktop-body {
+  display: none;
+}
+.top-desktop-nav {
+  display: none;
+}
 
 /* Floating Dock Bottom Nav (Apple Island & Liquid Glass Style) */
 .bottom-nav {
@@ -1283,55 +1313,391 @@ body {
   #fitness-app {
     max-width: 1040px;
     margin: 0 auto;
-    padding: 16px 24px calc(100px + env(safe-area-inset-bottom));
+    padding: 16px 24px 40px;
     min-height: 100vh;
   }
 
+  /* Desktop Top Bar & Integrated Tab Navigation */
   .top-bar {
     border-radius: 20px;
     margin: 8px 0 20px;
+    padding: 10px 20px;
     border: 1px solid var(--border);
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12), var(--glass-rim);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+  }
+  .top-center-status {
+    font-size: 0.76rem;
+    color: var(--text-muted);
+  }
+  .top-desktop-nav {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(0, 0, 0, 0.04);
+    padding: 4px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+  }
+  :root[data-theme="dark"] .top-desktop-nav,
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .top-desktop-nav {
+      background: rgba(255, 255, 255, 0.05);
+    }
+  }
+  .desktop-nav-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 10px;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 0.84rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .desktop-nav-tab:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.06);
+  }
+  .desktop-nav-tab.active {
+    background: var(--card-bg);
+    color: var(--accent);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12), var(--glass-rim);
+  }
+  .desktop-nav-tab svg {
+    transition: transform 0.2s ease;
+  }
+  .desktop-nav-tab.active svg {
+    transform: scale(1.08);
   }
 
-  /* Calendar View - Comfortable Expansion */
+  /* Desktop Month Navigation - 3-Zone Control & Overview Bar */
+  .month-nav {
+    max-width: 1040px;
+    width: 100%;
+    margin: 14px auto 20px;
+    padding: 0 4px;
+    height: auto;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .month-nav-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 2;
+  }
+  .month-nav-btn {
+    border-radius: 10px;
+    width: 34px;
+    height: 34px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  }
+  .month-nav-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: scale(1.05);
+  }
+  .desktop-today-btn {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    height: 34px;
+    border-radius: 10px;
+    padding: 0 14px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .desktop-today-btn:hover {
+    filter: brightness(1.1);
+  }
+  .mobile-today-badge {
+    display: none !important;
+  }
+  .month-display {
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+  .month-stats-chips {
+    display: flex !important;
+    align-items: center;
+    z-index: 2;
+  }
+  .month-chips-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .month-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  }
+  .month-chip strong {
+    color: var(--text-primary);
+    font-weight: 700;
+  }
+  .month-chip.chip-workout {
+    border-color: rgba(16, 185, 129, 0.3);
+    background: linear-gradient(135deg, var(--card-bg) 0%, rgba(16, 185, 129, 0.08) 100%);
+  }
+  .month-chip.chip-workout strong {
+    color: var(--accent);
+  }
+  .chip-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+
+  /* Calendar View - Full Width Desktop Dashboard */
   .calendar-container {
-    max-width: 820px;
+    max-width: 1040px;
     margin: 0 auto;
     padding: 0;
   }
   .weekdays {
-    font-size: 0.86rem;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--text-muted);
     margin-bottom: 12px;
+    padding: 0 4px;
+  }
+  .weekdays span:first-child,
+  .weekdays span:last-child {
+    color: var(--accent-cyan);
   }
   .days-grid {
     gap: 10px;
   }
   .day-cell {
-    min-height: 62px;
+    aspect-ratio: auto;
+    min-height: 108px;
     border-radius: 16px;
-    padding: 8px 4px 6px;
+    padding: 10px 10px 8px;
+    align-items: stretch;
+    justify-content: flex-start;
+    text-align: left;
+    border: 1px solid var(--card-border);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05), var(--glass-rim);
   }
   .day-cell:hover {
-    transform: translateY(-2px);
+    transform: translateY(-2.5px);
     border-color: rgba(16, 185, 129, 0.45);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25), 0 0 14px var(--accent-glow);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18), 0 0 16px var(--accent-glow);
+  }
+  .day-cell-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
   }
   .day-number {
     font-size: 1.05rem;
+    font-weight: 700;
   }
-  .dots-container {
-    max-width: 44px;
-    gap: 3.5px;
+  .day-top-badges {
+    display: flex;
+    align-items: center;
+    gap: 4px;
   }
-  .dot {
-    height: 4px;
+  .day-badge-today {
+    background: var(--accent);
+    color: #FFFFFF;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 5px;
+    line-height: 1.3;
+  }
+  .day-badge-weight {
+    background: rgba(148, 163, 184, 0.15);
+    color: var(--text-secondary);
+    font-size: 0.68rem;
+    font-weight: 600;
+    padding: 1px 5px;
+    border-radius: 5px;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.3;
+  }
+  :root[data-theme="dark"] .day-badge-weight,
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .day-badge-weight {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-secondary);
+    }
   }
 
-  /* Month Navigation - Centered Capsule */
-  .month-nav {
-    max-width: 380px;
-    margin: 12px auto 22px;
+  /* Hide mobile dots on desktop */
+  .dots-container {
+    display: none !important;
+  }
+
+  /* Desktop Rich Card Body */
+  .day-desktop-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    margin-top: 6px;
+    gap: 4px;
+  }
+  .desktop-workout-box {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .desktop-muscle-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 7px;
+    border-radius: 7px;
+    font-size: 0.76rem;
+    font-weight: 600;
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    color: var(--text-primary);
+    width: fit-content;
+    max-width: 100%;
+  }
+  .desktop-muscle-pill .pill-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .desktop-muscle-pill .pill-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .desktop-meta-summary {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+    margin-top: 2px;
+    line-height: 1.3;
+  }
+  .desktop-rest-box {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin-top: 2px;
+  }
+  .desktop-rest-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 6px;
+    border-radius: 5px;
+    font-size: 0.72rem;
+    font-weight: 500;
+    background: rgba(148, 163, 184, 0.12);
+    color: var(--text-muted);
+    width: fit-content;
+  }
+  .desktop-rest-pill .rest-pill-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    opacity: 0.6;
+  }
+  .desktop-diet-summary {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.3;
+  }
+
+  /* Muscle category distinct tints */
+  .desktop-muscle-pill.pill-dot-red {
+    background: rgba(244, 63, 94, 0.1);
+    border-color: rgba(244, 63, 94, 0.25);
+  }
+  .desktop-muscle-pill.pill-dot-blue {
+    background: rgba(6, 182, 212, 0.1);
+    border-color: rgba(6, 182, 212, 0.25);
+  }
+  .desktop-muscle-pill.pill-dot-green {
+    background: rgba(16, 185, 129, 0.1);
+    border-color: rgba(16, 185, 129, 0.25);
+  }
+  .desktop-muscle-pill.pill-dot-yellow {
+    background: rgba(245, 158, 11, 0.1);
+    border-color: rgba(245, 158, 11, 0.25);
+  }
+  .desktop-muscle-pill.pill-dot-purple {
+    background: rgba(168, 85, 247, 0.1);
+    border-color: rgba(168, 85, 247, 0.25);
+  }
+  .desktop-muscle-pill.pill-dot-brown {
+    background: rgba(217, 119, 6, 0.1);
+    border-color: rgba(217, 119, 6, 0.25);
+  }
+  .desktop-muscle-pill.pill-dot-gray {
+    background: rgba(148, 163, 184, 0.1);
+    border-color: rgba(148, 163, 184, 0.25);
+  }
+
+  /* Distinct visual accent for training days on desktop */
+  .day-cell.has-training {
+    border-left: 3.5px solid var(--accent) !important;
+    background: linear-gradient(155deg, var(--card-bg) 0%, rgba(16, 185, 129, 0.05) 100%) !important;
+  }
+  .day-cell.today {
+    border: 1.5px solid var(--accent) !important;
+    box-shadow: 0 0 16px var(--accent-glow) !important;
+  }
+  .day-cell:not(.has-data):not(.today) {
+    opacity: 0.42;
+    background: rgba(255, 255, 255, 0.35);
+    border-style: dashed;
+    border-color: var(--card-border);
+    box-shadow: none;
+    cursor: default;
+  }
+  :root[data-theme="dark"] .day-cell:not(.has-data):not(.today),
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .day-cell:not(.has-data):not(.today) {
+      opacity: 0.32;
+      background: rgba(255, 255, 255, 0.02);
+    }
+  }
+  .day-cell:not(.has-data):not(.today):hover {
+    transform: none;
+    box-shadow: none;
+    border-color: var(--card-border);
+  }
+
+  @media (max-width: 900px) and (min-width: 768px) {
+    .month-stats-chips .chip-rest,
+    .month-stats-chips .chip-rate {
+      display: none;
+    }
   }
 
   /* Stats Tab - Side-by-Side 2-Column Grid */
@@ -1441,12 +1807,8 @@ body {
     display: none;
   }
 
-  /* Floating Dock on Desktop - Centered macOS Style */
+  /* Bottom Nav Hidden on Desktop (Navigation moved to Top Bar) */
   .bottom-nav {
-    width: 460px;
-    max-width: 460px;
-    height: 62px;
-    bottom: 24px;
-    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.5), var(--glass-rim), var(--glass-bevel);
+    display: none !important;
   }
 }
